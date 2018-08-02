@@ -9,12 +9,14 @@ extern keymap_config_t keymap_config;
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
 #define _QWERTY 0
-#define _FN 1
+#define _LOWER 1
+#define _RAISE 2
 #define _ADJUST 16
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
-  FN,
+  LOWER,
+  RAISE,
   ADJUST,
 };
 
@@ -24,9 +26,8 @@ enum custom_keycodes {
 
 #define XXXXXXX KC_NO
 #define KC_AJST ADJUST
-//#define KC_LOWR LOWER
-//#define KC_RASE RAISE
-#define	KC_FN1 MO(_FN)
+#define KC_LOWR LOWER
+#define KC_RASE RAISE
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -40,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |  -   |      |   =  |   N  |   M  |   ,  |   .  |   /  |Enter |
  * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
- * |  Fn  |      | Ctrl | ALT  | CMD  |    Space    |      |    Space    |  CMD | Left | Down |  Up  | Right|
+ * | Lower|Raise | Ctrl | ALT  | CMD  |    Space    |      |    Space    |  CMD | Left | Down |  Up  | Right|
  * `------------------------------------------------'      `------------------------------------------------'
  */
   [_QWERTY] = LAYOUT_kc(
@@ -53,36 +54,64 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
      LSFT, Z  , X  , C  , V  , B  ,MINS,     EQL , N  , M  ,COMM,DOT ,SLSH,ENT ,
   //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
-      FN1,    ,LCTL,LALT,LGUI,    ,SPC ,     SPC ,    ,RGUI,LEFT,DOWN, UP ,RGHT
+     LOWR,RASE,LCTL,LALT,LGUI,    ,SPC ,     SPC ,    ,RGUI,LEFT,DOWN, UP ,RGHT
   //`----+----+----+----+----+----+----'    `----+----+----+----+----+----+----'
   ),
-	
-/* FN
+
+/* Lower
  * ,------------------------------------------------.      ,------------------------------------------------.
  * |      |  F1  |  F3  |  F3  |  F4  |  F5  |   ~  |      |  F6  |  F7  |  F8  |  F9  | F10  | F11  | F12  |
  * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
- * |   _  |   !  |   @  |   #  |   $  |   %  |      |      |   ^  |   &  |   *  |   (  |   )  |   {  |   }  |
+ * |   _  |      |   !  |   @  |   #  |   $  |   %  |      |   ^  |   &  |   *  |   (  |   )  |   {  |   }  |
  * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
- * |   +  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |      |      |   _  |   +  |   {  |   }  |      | Vol+ |
+ * |   +  |      |  F1  |  F2  |  F3  |  F4  |  F5  |      |  F6  |   _  |   +  |   {  |   }  |      |      |
  * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
- * | Shift|  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |      |      |      |      | Back | Next | Play | Vol- |
+ * |      |      |  F7  |  F8  |  F9  |  F10 |  F11 |      |  F12 |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
- * |      |Adjust| Ctrl | ALT  | CMD  |    Space    |      |    Space    |  CMD |      | PgDn | PgUp | Mute |
+ * |      |      |      |Adjust|      |             |      |             | Next | Vol- | Vol+ | Play |      |
  * `------------------------------------------------'      `------------------------------------------------'
  */
-  [_FN] = LAYOUT_kc(
+  [_LOWER] = LAYOUT_kc(
   //,----+----+----+----+----+----+----.    ,----+----+----+----+----+----+----.
          , F1 , F2 , F3 , F4 , F5 ,TILD,      F6 , F7 , F8 , F9 ,F10 ,F11 , F12,
   //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
-     UNDS,EXLM, AT ,HASH,DLR ,PERC,    ,     CIRC,AMPR,ASTR,LPRN,RPRN,LCBR,RCBR,
+     UNDS,    ,EXLM, AT ,HASH,DLR ,PERC,     CIRC,AMPR,ASTR,LPRN,RPRN,LCBR,RCBR,
   //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
-     PLUS, F1 , F2 , F3 , F4 , F5 , F6 ,         ,UNDS,PLUS,LCBR,RCBR,    ,VOLU,
+     PLUS,    , F1 , F2 , F3 , F4 , F5 ,      F6 ,UNDS,PLUS,LCBR,RCBR,    ,    ,
   //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
-     LSFT, F7 , F8 , F9 ,F10 ,F11 , F12,         ,    ,    ,MPRV,MNXT,MPLY,VOLD,
+         ,    , F7 , F8 , F9 ,F10 ,F11 ,     F12 ,    ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
-         ,AJST,LCTL,LALT,LGUI,    ,SPC ,     SPC ,    ,RGUI,    ,PGDN,PGUP,MUTE
+         ,    ,    ,    ,AJST,    ,    ,         ,    ,MNXT,VOLD,VOLU,MPLY,MUTE
   //`----+----+----+----+----+----+----'    `----+----+----+----+----+----+----'
   ),
+
+/* Raise
+ * ,------------------------------------------------.      ,------------------------------------------------.
+ * |      |   ~  |  F1  |  F3  |  F3  |  F4  |  F5  |      |  F6  |  F7  |  F8  |  F9  | F10  | F11  | F12  |
+ * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
+ * |   _  |      |   1  |   2  |   3  |   4  |   5  |      |   6  |   7  |   8  |   9  |   0  |   {  |   }  |
+ * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
+ * |   +  |      |  F1  |  F2  |  F3  |  F4  |  F5  |      |  F6  |   -  |   =  |   [  |   ]  |      |      |
+ * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
+ * |      |      |  F7  |  F8  |  F9  |  F10 |  F11 |      |  F12 |ISO # |ISO / |      |      |      |      |
+ * |------+------+------+------+------+------+------|      |------+------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |      |             | Next | Vol- | Vol+ | Play |      |
+ * `------------------------------------------------'      `------------------------------------------------'
+ */
+  [_RAISE] = LAYOUT_kc(
+  //,----+----+----+----+----+----+----.    ,----+----+----+----+----+----+----.
+         ,TILD, F1 , F2 , F3 , F4 , F5 ,      F6 , F7 , F8 , F9 ,F10 ,F11 ,F12 ,
+  //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
+     UNDS,    , 1  , 2  , 3  , 4  , 5  ,      6  , 7  , 8  , 9  , 0  ,LCBR,RCBR,
+  //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
+     PLUS,    , F1 , F2 , F3 , F4 , F5 ,      F6 ,MINS,EQL ,LBRC,RBRC,    ,    ,
+  //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
+         ,    , F7 , F8 , F9 ,F10 ,F11 ,     F12 ,NUHS,NUBS,    ,    ,    ,    ,
+  //|----+----+----+----+----+----+----|    |----+----+----+----+----+----+----|
+         ,    ,    ,    ,    ,    ,    ,         ,    ,MNXT,VOLD,VOLU,MPLY,MUTE
+  //`----+----+----+----+----+----+----'    `----+----+----+----+----+----+----'
+  ),
+	
 
   [_ADJUST] = LAYOUT(
     _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, \
@@ -114,11 +143,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
-    case FN:
+    case LOWER:
       if (record->event.pressed) {
-        layer_on(_FN);
+        layer_on(_LOWER);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
       } else {
-        layer_off(_FN);
+        layer_off(_LOWER);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      }
+      return false;
+      break;
+    case RAISE:
+      if (record->event.pressed) {
+        layer_on(_RAISE);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      } else {
+        layer_off(_RAISE);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
       }
       return false;
       break;
